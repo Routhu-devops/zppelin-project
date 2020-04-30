@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{include "sf.fullname" .}}
+  namespace: "{{.Values.appNamespace}}"
+  labels:
+    app: {{include "sf.name" .}}
+    chart: {{include "sf.chart" .}}
+    release: {{.Release.Name}}
+    heritage: {{.Release.Service}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{.Values.maxSurge}}
+      maxUnavailable: {{.Values.maxUnavailable}}
+    type: RollingUpdate
+  minReadySeconds: {{.Values.minReadySeconds}}
+  progressDeadlineSeconds: {{.Values.progressDeadlineSeconds}}
+
+  selector:
+    matchLabels:
+      app: {{include "sf.name" .}}
+      release: {{.Release.Name}}
+  template:
+    metadata:
+      labels:
+        app: {{include "sf.name" .}}
+        release: {{.Release.Name}}
+    spec:
+      containers:
+      - name: {{.Chart.Name}}
+        image: "{{.Values.image.repository}}:{{.Values.image.tag}}"
+        imagePullPolicy: {{.Values.image.pullPolicy}}
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+      imagePullSecrets:
+        - name: "{{.Values.dockerSecret}}"

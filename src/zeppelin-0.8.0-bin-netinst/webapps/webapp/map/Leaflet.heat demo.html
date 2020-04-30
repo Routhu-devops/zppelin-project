@@ -1,0 +1,55 @@
+<!-- saved from url=(0043)http://leaflet.github.io/Leaflet.heat/demo/ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script type="text/javascript" src="map/UNI_SDK_VIDEO_MGRS100M_U4.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="appid" ng-app="app" ng-controller="ctrl">
+
+            <script type="text/javascript">
+	            var app = angular.module('app', []);
+
+				app.controller('ctrl', ['$scope', function ($scope) {
+				    $scope.compiledScope = $scope
+				    $scope.markets = ["Pacific Northwest", "LASCA", "HIHO", "SFNSA"];
+				    $scope.submarkets = ["CASA", "AKX5", "CASF", "LASCA", "HIHO"];
+				}]);
+			</script>
+
+			<label for="market">Market: </label>
+			<select id="market"><option>All</option><option ng-repeat="(key, value) in markets">{{value}}</option></select>
+			<label for="submarket">Submarket: </label>
+			<select id="submarket"><option>All</option><option ng-repeat="(key, value) in submarkets">{{value}}</option></select>
+
+			<div class="resultContained ng-scope"></div>
+
+            <!-- Add following 2 script elements to %angular paragraph -->
+
+            <!-- %angular start -->
+
+            <script type="text/javascript" src="map/heatMap.js"></script>
+            <script type="text/javascript">
+				loadMap({"bindingName":"dataToPlot", "mapBindings":{"lat":"sw_lat", "long":"sw_long", "intensity":"avgRsrp"}});
+				//loadMap();
+			</script>
+
+            <!-- %angular end -->
+
+            <script type="text/javascript">
+				setTimeout(loadData, 500);
+
+				function loadData() {
+				    var el = angular.element($('#map').parent('.ng-scope'));
+				    var $scope = el.scope().compiledScope;
+				    $scope.dataToPlot = dataToPlot;
+				    $scope.$apply();
+				}
+			</script>
+		</div>
+	</body>
+</html>
